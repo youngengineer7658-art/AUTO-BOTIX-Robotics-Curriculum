@@ -25,22 +25,22 @@ M22 -> D8
 #define M21 7
 #define M22 8
 
-//------------- IR ------------------------
+//------------- Updated Saved IR Commands -----
 
 #define TSOP_PIN 3
 
-#define UP      0x0E
-#define DOWN    0x1A
-#define LEFT    0x0A
-#define RIGHT   0x1E
-#define OK      0x05
+#define UP      0x6   // Mapped from VOL+ (Forward)
+#define DOWN    0x5   // Mapped from VOL- (Backward)
+#define LEFT    0x2   // Mapped from PREV (|<<) (Turn Left)
+#define RIGHT   0x3   // Mapped from NEXT (>>|) (Turn Right)
+#define OK      0x1   // Mapped from PAUSE (Stop Car)
 
 //-----------------------------------------
 
 int speedValue = 180;
 
 unsigned long lastSignalTime = 0;
-const unsigned long STOP_TIMEOUT = 200;   // ms - itni der signal na aaye to stop
+const unsigned long STOP_TIMEOUT = 200;   // ms - signal rukte hi auto-stop
 bool isMoving = false;
 
 //=========================================
@@ -193,7 +193,7 @@ void loop()
     IrReceiver.resume();
   }
 
-  // Agar button chhod diya (koi naya signal nahi aaya), auto-stop karo
+  // Agar button release kar diya, toh 200ms baad car automatic stop ho jayegi
   if (isMoving && (millis() - lastSignalTime > STOP_TIMEOUT))
   {
     stopCar();
