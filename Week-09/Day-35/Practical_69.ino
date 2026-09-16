@@ -47,18 +47,18 @@ Adafruit_NeoPixel rgb(NUM_LEDS, RGB_PIN, NEO_GRB + NEO_KHZ800);
 
 //------------- Remote Commands -------------
 
-#define POWER   0x09
+#define POWER   0x1
 
-#define BTN1    0x0D
-#define BTN2    0x19
-#define BTN3    0x1B
-#define BTN4    0x01
-#define BTN5    0x11
-#define BTN6    0x15
-#define BTN7    0x17
-#define BTN8    0x06
-#define BTN9    0x12
-#define BTN0    0x16
+#define BTN1    0xA
+#define BTN2    0x1B
+#define BTN3    0x1F
+#define BTN4    0xC
+#define BTN5    0xD
+#define BTN6    0xE
+#define BTN7    0x0
+#define BTN8    0xF
+#define BTN9    0x19
+#define BTN0    0x7
 
 //-------------------------------------------
 
