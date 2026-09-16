@@ -1,6 +1,6 @@
 /*
 ====================================================
- Project-28 : IR Controlled Robot Car (Final Correct Code)
+ Project-28 : IR Controlled Robot Car (Final Code)
 ====================================================
  Autobotix Robotics Board
  M11  -> D2 | TSOP -> D3 | M12 -> D4
@@ -32,21 +32,21 @@ Adafruit_NeoPixel rgb(NUMPIXELS, RGB_PIN, NEO_GRB + NEO_KHZ800);
 bool headlightState = false;
 unsigned long lastHeadlightToggle = 0; // Debounce Timer
 
-//--------------- Remote Commands ------------
-#define POWER      0x09
+//--------------- Saved Custom Remote Commands ------------
+#define POWER       0x12   // Emergency Stop
 
-#define LOWSPD     0x0D
-#define MEDSPD     0x19
-#define HIGHSPD    0x1B
+#define LOWSPD      0xA   // Button 1 (Low Speed)
+#define MEDSPD      0x1B   // Button 2 (Medium Speed)
+#define HIGHSPD     0x1F   // Button 3 (High Speed)
 
-#define HEADLIGHT  0x01     // Button 4 Primary Code
+#define HEADLIGHT   0xC   // Button 4 (Headlight Toggle)
 
-#define OK         0x05
+#define OK          0x1   // PAUSE Key (Car Stop)
 
-#define UP         0x0E
-#define DOWN       0x1A
-#define LEFT       0x0A
-#define RIGHT      0x1E
+#define UP          0x6   // VOL+ Key (Forward)
+#define DOWN        0x5  // VOL- Key (Backward)
+#define LEFT        0x2   // PREV Key (Left)
+#define RIGHT       0x3   // NEXT Key (Right)
 
 //--------------- Variables ------------------
 int speedValue = 180;
@@ -257,12 +257,6 @@ void loop()
 
     byte cmd = IrReceiver.decodedIRData.command;
 
-    // Filter empty zero-signals
-    if (cmd == 0x00) {
-      IrReceiver.resume();
-      return;
-    }
-
     printCommand(cmd);
 
     switch (cmd)
@@ -305,14 +299,13 @@ void loop()
 
       //---------------- Headlight ----------------
 
-      case HEADLIGHT: // 0x01
-      case 0x04:      // Alternate Button 4 Code
+      case HEADLIGHT: // Button 4 Code (0x0C)
         toggleHeadlight();
         break;
 
       //---------------- Emergency Stop ----------
 
-      case POWER:
+      case POWER: // Power Key Code (0x12)
         emergencyStop();
         break;
 
