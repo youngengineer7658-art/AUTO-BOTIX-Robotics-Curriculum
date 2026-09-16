@@ -23,13 +23,13 @@ MFN -> D6
 M21 -> D7
 M22 -> D8
 
-Button Mapping:
+Button Mapping (Saved Custom Mapping):
 
-▲  -> Forward
-▼  -> Backward
-◀  -> Left
-▶  -> Right
-OK -> Stop
+▲ (VOL+)   -> Forward  (0x05)
+▼ (VOL-)   -> Backward (0x06)
+◀ (PREV)   -> Left     (0x02)
+▶ (NEXT)   -> Right    (0x03)
+OK (PAUSE) -> Stop     (0x01)
 
 ==================================================
 */
@@ -49,13 +49,13 @@ OK -> Stop
 
 #define IR_PIN 3
 
-//------------- Remote Commands ------------
+//------------- Updated Remote Commands ----
 
-#define UP      0x0E
-#define DOWN    0x1A
-#define LEFT    0x0A
-#define RIGHT   0x1E
-#define OK      0x05
+#define UP      0x6  // Mapped from VOL+
+#define DOWN    0x5   // Mapped from VOL-
+#define LEFT    0x2   // Mapped from PREV (|<<)
+#define RIGHT   0x3   // Mapped from NEXT (>>|)
+#define OK      0x1   // Mapped from PAUSE key
 
 //------------------------------------------
 
@@ -164,39 +164,43 @@ void loop()
 {
   if (IrReceiver.decode())
   {
-    byte cmd = IrReceiver.decodedIRData.command;
-
-    Serial.print("Command : 0x");
-    Serial.println(cmd, HEX);
-
-    switch (cmd)
+    // Repeat holding signals ko filter karke ignore karo
+    if (!(IrReceiver.decodedIRData.flags & IRDATA_FLAGS_IS_REPEAT))
     {
-      case UP:
-        forward();
-        break;
+      byte cmd = IrReceiver.decodedIRData.command;
 
-      case DOWN:
-        backward();
-        break;
+      Serial.print("Command : 0x");
+      Serial.println(cmd, HEX);
 
-      case LEFT:
-        left();
-        break;
+      switch (cmd)
+      {
+        case UP:
+          forward();
+          break;
 
-      case RIGHT:
-        right();
-        break;
+        case DOWN:
+          backward();
+          break;
 
-      case OK:
-        stopMotor();
-        break;
+        case LEFT:
+          left();
+          break;
 
-      default:
-        Serial.println("No Action");
-        break;
+        case RIGHT:
+          right();
+          break;
+
+        case OK:
+          stopMotor();
+          break;
+
+        default:
+          Serial.println("No Action");
+          break;
+      }
+
+      Serial.println("--------------------------");
     }
-
-    Serial.println("--------------------------");
 
     IrReceiver.resume();
   }
