@@ -33,9 +33,14 @@ Hardware:
 // 2. OLED DISPLAY (128 bytes RAM)
 U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 
-// 3. PARAMETERS & COMMANDS
-#define IR_POWER     0x09
-#define IR_OK        0x05
+// 3. SAVED CUSTOM REMOTE COMMANDS
+#define IR_POWER     0x12   // Power Key (Toggle AUTO / MANUAL)
+#define IR_OK        0x1   // PAUSE Key (Stop Motors)
+
+#define IR_UP        0x5   // VOL+ Key (Forward)
+#define IR_DOWN      0x6   // VOL- Key (Backward)
+#define IR_LEFT      0x2   // PREV Key (Left)
+#define IR_RIGHT     0x3   // NEXT Key (Right)
 
 const int MOTOR_SPEED   = 220; // Driving torque
 const int OBSTACLE_DIST = 25;  // Obstacle threshold (cm)
@@ -159,23 +164,23 @@ void handleIRCommand(byte code) {
 
   if (autoMode) return; // Ignore movement commands in AUTO mode
 
-  if (code == 0x0E || code == 0x0D || code == 0x18) {
+  if (code == IR_UP) {
     moveForward();
     lastCommand = "FORWARD";
   } 
-  else if (code == 0x1A || code == 0x19 || code == 0x52) {
+  else if (code == IR_DOWN) {
     moveBackward();
     lastCommand = "BACKWARD";
   } 
-  else if (code == 0x0A || code == 0x08 || code == 0x1C) {
+  else if (code == IR_LEFT) {
     turnLeft();
     lastCommand = "LEFT";
   } 
-  else if (code == 0x1E || code == 0x5A || code == 0x0C) {
+  else if (code == IR_RIGHT) {
     turnRight();
     lastCommand = "RIGHT";
   } 
-  else if (code == IR_OK || code == 0x1D) {
+  else if (code == IR_OK) {
     stopMotors();
     lastCommand = "STOP";
   } 
@@ -219,9 +224,11 @@ void loop() {
 
   // 2. IR REMOTE RECEPTION
   if (IrReceiver.decode()) {
-    byte code = IrReceiver.decodedIRData.command;
-    if (code != 0x00) {
-      handleIRCommand(code);
+    if (!(IrReceiver.decodedIRData.flags & IRDATA_FLAGS_IS_REPEAT)) {
+      byte code = IrReceiver.decodedIRData.command;
+      if (code != 0x00) {
+        handleIRCommand(code);
+      }
     }
     IrReceiver.resume();
   }
