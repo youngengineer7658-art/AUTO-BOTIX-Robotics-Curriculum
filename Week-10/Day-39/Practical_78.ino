@@ -37,8 +37,8 @@ U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 #define IR_POWER     0x12   // Power Key (Toggle AUTO / MANUAL)
 #define IR_OK        0x1   // PAUSE Key (Stop Motors)
 
-#define IR_UP        0x5   // VOL+ Key (Forward)
-#define IR_DOWN      0x6   // VOL- Key (Backward)
+#define IR_UP        0x6   // VOL+ Key (Forward)
+#define IR_DOWN      0x5   // VOL- Key (Backward)
 #define IR_LEFT      0x2   // PREV Key (Left)
 #define IR_RIGHT     0x3   // NEXT Key (Right)
 
