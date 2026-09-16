@@ -35,12 +35,12 @@ Adafruit_NeoPixel rgb(NUM_LEDS, RGB_PIN, NEO_GRB + NEO_KHZ800);
 #define BTN_BACK_MIN   725
 #define BTN_BACK_MAX   745
 
-// 4. REMOTE COMMANDS
-#define POWER   0x09
-#define BTN1    0x0D
-#define BTN2    0x19
-#define BTN3    0x1B
-#define OK      0x05
+// 4. SAVED CUSTOM REMOTE COMMANDS
+#define POWER   0x12   // Power Key (ALL OFF)
+#define BTN1    0xA   // Button 1 (Living Room Light)
+#define BTN2    0x1B   // Button 2 (Bedroom Light)
+#define BTN3    0x1F   // Button 3 (Alarm Toggle)
+#define OK      0x1   // PAUSE Key (Auto Mode Toggle)
 
 // 5. GLOBAL VARIABLES
 bool alarmOn = false;
@@ -198,17 +198,20 @@ void loop()
   // 1. IR Remote
   if (IrReceiver.decode())
   {
-    byte cmd = IrReceiver.decodedIRData.command;
-    if (cmd != 0x0)
+    if (!(IrReceiver.decodedIRData.flags & IRDATA_FLAGS_IS_REPEAT))
     {
-      Serial.print(F("[IR RECV] Code: 0x"));
-      Serial.println(cmd, HEX);
+      byte cmd = IrReceiver.decodedIRData.command;
+      if (cmd != 0x0)
+      {
+        Serial.print(F("[IR RECV] Code: 0x"));
+        Serial.println(cmd, HEX);
 
-      if (cmd == POWER) handleAction(0);
-      else if (cmd == BTN1) handleAction(1);
-      else if (cmd == BTN2) handleAction(2);
-      else if (cmd == BTN3) handleAction(3);
-      else if (cmd == OK)   handleAction(4);
+        if (cmd == POWER) handleAction(0);
+        else if (cmd == BTN1) handleAction(1);
+        else if (cmd == BTN2) handleAction(2);
+        else if (cmd == BTN3) handleAction(3);
+        else if (cmd == OK)   handleAction(4);
+      }
     }
     IrReceiver.resume();
   }
