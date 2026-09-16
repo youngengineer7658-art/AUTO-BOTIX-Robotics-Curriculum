@@ -25,17 +25,19 @@ M22 -> D8
 
 #define TSOP_PIN 3
 
+//------------- Updated Saved IR Commands -----
+
 // Movement Commands
-#define UP      0x0E
-#define DOWN    0x1A
-#define LEFT    0x0A
-#define RIGHT   0x1E
-#define OK      0x05
+#define UP        0x6   // Mapped from VOL+ (Forward)
+#define DOWN      0x5   // Mapped from VOL- (Backward)
+#define LEFT      0x2   // Mapped from PREV (|<<) (Turn Left)
+#define RIGHT     0x3   // Mapped from NEXT (>>|) (Turn Right)
+#define OK        0x1   // Mapped from PAUSE (Stop Car)
 
 // Speed Commands
-#define LOW_SPEED     0x0D     // Button 1
-#define MEDIUM_SPEED  0x19     // Button 2
-#define HIGH_SPEED    0x1B     // Button 3
+#define LOW_SPEED     0xA   // Button 1 (Low Speed - 80)
+#define MEDIUM_SPEED  0x1B   // Button 2 (Medium Speed - 180)
+#define HIGH_SPEED    0x1F   // Button 3 (High Speed - 255)
 
 int speedValue = 180;
 
@@ -152,27 +154,27 @@ void loop()
     {
       switch (cmd)
       {
-        //--------- Speed -------------
+        //--------- Speed Controls ----------
 
         case LOW_SPEED:
           speedValue = 80;
           analogWrite(MFN, speedValue);
-          Serial.println("Speed : LOW");
+          Serial.println("Speed : LOW (80)");
           break;
 
         case MEDIUM_SPEED:
           speedValue = 180;
           analogWrite(MFN, speedValue);
-          Serial.println("Speed : MEDIUM");
+          Serial.println("Speed : MEDIUM (180)");
           break;
 
         case HIGH_SPEED:
           speedValue = 255;
           analogWrite(MFN, speedValue);
-          Serial.println("Speed : HIGH");
+          Serial.println("Speed : HIGH (255)");
           break;
 
-        //--------- Movement ----------
+        //--------- Movement Controls -------
 
         case UP:
           forward();
